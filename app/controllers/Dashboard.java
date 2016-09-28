@@ -1,30 +1,24 @@
 package controllers;
 
+import com.google.inject.Inject;
+import java.io.IOException;
+import java.util.HashSet;
 import models.User;
 import models.utils.VkGroupNotFoundException;
-import models.vk.VkEnterExitHistory;
 import models.vk.VkGroup;
-import models.vk.VkUser;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.data.Form;
+import play.data.FormFactory;
 import play.data.validation.Constraints;
 import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.dashboard.index;
-import vk.group.VkGroupMembersResponse;
 import vk.group.VkGroupResponse;
 import vk.group.VkGroupUtils;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
-import static play.data.Form.form;
 
 /**
  * User: yesnault
@@ -35,13 +29,16 @@ public class Dashboard extends Controller {
 
     private static final Logger LOG = LoggerFactory.getLogger(Dashboard.class);
 
+    @Inject
+    private FormFactory formFactory;
+
     public Result index() {
-        return ok(index.render(User.findByEmail(request().username()), Form.form(AddVkGroup.class)));
+        User currentUser = User.findByEmail(request().username());
+        return ok(index.render(currentUser, formFactory.form(AddVkGroup.class)));
     }
 
     public Result addVkGroupAction() {
-        LOG.info("hello");
-        Form<AddVkGroup> addVkGroupForm = form(AddVkGroup.class).bindFromRequest();
+        Form<AddVkGroup> addVkGroupForm = formFactory.form(AddVkGroup.class).bindFromRequest();
 
         if (addVkGroupForm.hasErrors()) {
             return badRequest(index.render(User.findByEmail(request().username()), addVkGroupForm));
@@ -89,7 +86,7 @@ public class Dashboard extends Controller {
     public static class AddVkGroup {
 
         @Constraints.Required
-        public String vkGroupId;
+        private String vkGroupId;
 
         public String validate() {
             if (StringUtils.isBlank(vkGroupId)) {
@@ -103,6 +100,14 @@ public class Dashboard extends Controller {
 
             return null;
         }
+
+        public String getVkGroupId() {
+            return vkGroupId;
+        }
+
+        public void setVkGroupId(String vkGroupId) {
+            this.vkGroupId = vkGroupId;
+        }
     }
 
     public Result removeVkGroup() {
@@ -114,7 +119,7 @@ public class Dashboard extends Controller {
         }
 
         for (User user : new HashSet<>(vkGroup.users)) {
-            if (user.email.equals(request().username())) {
+            if (user.getEmail().equals(request().username())) {
                 vkGroup.users.remove(user);
             }
         }

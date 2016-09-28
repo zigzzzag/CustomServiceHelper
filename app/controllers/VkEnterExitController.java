@@ -65,14 +65,14 @@ public class VkEnterExitController {
 
     public static class Filter {
 
-        public Date from;
+        private Date from;
 
-        public Date to;
+        private Date to;
 
         @Constraints.Required
-        public String vkGroupId;
+        private String vkGroupId;
 
-        public String status;
+        private String status;
 
         /**
          * Validate the authentication.
@@ -85,6 +85,38 @@ public class VkEnterExitController {
             }
 
             return null;
+        }
+
+        public Date getFrom() {
+            return from;
+        }
+
+        public void setFrom(Date from) {
+            this.from = from;
+        }
+
+        public Date getTo() {
+            return to;
+        }
+
+        public void setTo(Date to) {
+            this.to = to;
+        }
+
+        public String getVkGroupId() {
+            return vkGroupId;
+        }
+
+        public void setVkGroupId(String vkGroupId) {
+            this.vkGroupId = vkGroupId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
     }
 }

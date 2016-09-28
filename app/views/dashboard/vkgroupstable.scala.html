@@ -37,6 +37,10 @@
 
 <button id="removeSelectedVkGroup">Delete selected row</button>
 
+@for(vkGroup <- user.getVkGroups) {
+    <div>111@vkGroup.vkId</div>
+}
+
 <table id="vkGroupTable" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
@@ -47,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-    @for(vkGroup <- user.vkGroups) {
+    @for(vkGroup <- user.getVkGroups) {
         <tr>
             <td><a href="https://vk.com/@vkGroup.vkId"><img src="@vkGroup.photo" width="24" height="24" alt="none"></a></td>
             <td>@vkGroup.vkId</td>

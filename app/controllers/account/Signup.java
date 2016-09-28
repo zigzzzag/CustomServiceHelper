@@ -59,12 +59,11 @@ public class Signup extends Controller {
         }
 
         try {
-            User user = new User();
-            user.email = register.email;
-            user.fullname = register.fullname;
-            user.passwordHash = Hash.createPassword(register.inputPassword);
-            user.confirmationToken = UUID.randomUUID().toString();
-
+            String passHash = Hash.createPassword(register.inputPassword);
+            User user = new User().email(register.email)
+                    .fullname(register.fullname)
+                    .passwordHash(passHash)
+                    .confirmationToken(UUID.randomUUID().toString());
             user.save();
 
             return ok(created.render());

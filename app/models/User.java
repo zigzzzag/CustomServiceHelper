@@ -27,29 +27,29 @@ import java.util.Set;
 public class User extends Model {
 
     @Id
-    public Long id;
+    private Long id;
 
     @Constraints.Required
     @Formats.NonEmpty
     @Column(unique = true)
-    public String email;
+    private String email;
 
     @Constraints.Required
     @Formats.NonEmpty
     @Column(unique = true)
-    public String fullname;
+    private String fullname;
 
-    public String confirmationToken;
+    private String confirmationToken;
 
     @Constraints.Required
     @Formats.NonEmpty
-    public String passwordHash;
+    private String passwordHash;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date dateCreation;
+    private Date dateCreation;
 
     @Formats.NonEmpty
-    public Boolean validated = false;
+    private Boolean validated = false;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_vkGroup",
@@ -57,10 +57,10 @@ public class User extends Model {
                     @JoinColumn(name = "userId", nullable = false, updatable = false)},
             inverseJoinColumns = {
                     @JoinColumn(name = "vkGroupId", nullable = false, updatable = false)})
-    public Set<VkGroup> vkGroups;
+    private Set<VkGroup> vkGroups;
 
     // -- Queries (long id, user.class)
-    public static Model.Finder<Long, User> find = new Model.Finder<Long, User>(Long.class, User.class);
+    private static Model.Finder<Long, User> find = new Model.Finder<Long, User>(Long.class, User.class);
 
     /**
      * Retrieve a user from an email.
@@ -135,4 +135,83 @@ public class User extends Model {
         return true;
     }
 
+    public User email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public User fullname(String fullname) {
+        this.fullname = fullname;
+        return this;
+    }
+
+    public User passwordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+        return this;
+    }
+
+    public User confirmationToken(String confirmationToken) {
+        this.confirmationToken = confirmationToken;
+        return this;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getConfirmationToken() {
+        return confirmationToken;
+    }
+
+    public void setConfirmationToken(String confirmationToken) {
+        this.confirmationToken = confirmationToken;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    public Boolean getValidated() {
+        return validated;
+    }
+
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
+    }
+
+    public Set<VkGroup> getVkGroups() {
+        return vkGroups;
+    }
+
+    public void setVkGroups(Set<VkGroup> vkGroups) {
+        this.vkGroups = vkGroups;
+    }
 }
