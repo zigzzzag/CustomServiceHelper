@@ -1,0 +1,25 @@
+@(addVkGroupForm: Form[Dashboard.AddVkGroup])
+
+@import helper._
+
+@form(routes.Dashboard.addVkGroupAction(), 'class -> "form") {
+
+    <fieldset>
+        @inputText(
+            addVkGroupForm("vkGroupId"),
+            'placeholder -> Messages("managevkgroups.group_id"),
+            '_label -> Messages("managevkgroups.group_id"),
+            'class -> "form-control"
+        )
+    </fieldset>
+
+    @if(addVkGroupForm.hasGlobalErrors) {
+        <p class="error">
+            <span class="label label-danger">@addVkGroupForm.globalError.message</span>
+        </p>
+    }
+
+    <div class="form-actions">
+        <input type="submit" class="btn btn-primary" value="@Messages("managevkgroups.add_vkgroup")">
+    </div>
+}

@@ -1,0 +1,71 @@
+@(user: User)
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
+
+<script>
+        $(document).ready(function () {
+            var vkGroupTable = $('#vkGroupTable').DataTable();
+            $('#vkGroupTable tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                }
+                else {
+                    vkGroupTable.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+            });
+
+            $('#removeSelectedVkGroup').click(function () {
+                var vkIdSelected = vkGroupTable.row('.selected').data()[1];
+                $.ajax({
+                    type: 'GET',
+                    url: "@routes.Dashboard.removeVkGroup",
+                    data: 'vkGroupId=' + vkIdSelected,
+                    dataType: "text",
+                    success: function (data) {
+                        alert(data);
+                        vkGroupTable.row('.selected').remove().draw(false);
+                    },
+                    error: function (data) {
+                        alert('error: ' + data);
+                    }
+                });
+            });
+        });
+</script>
+
+<button id="removeSelectedVkGroup">Delete selected row</button>
+
+<table id="vkGroupTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th></th>
+            <th>VK ID</th>
+            <th>GROUP NAME</th>
+            <th>IS CLOSED</th>
+        </tr>
+    </thead>
+    <tbody>
+    @for(vkGroup <- user.vkGroups) {
+        <tr>
+            <td><a href="https://vk.com/@vkGroup.vkId"><img src="@vkGroup.photo" width="24" height="24" alt="none"></a></td>
+            <td>@vkGroup.vkId</td>
+            <td>@vkGroup.name</td>
+            <td>@if(vkGroup.isClosed == 0) {
+                OPEN
+            } else {
+                @if(vkGroup.isClosed == 1) {
+                    CLOSED
+                } else {
+                    @if(vkGroup.isClosed == 2) {
+                        PRIVATE
+                    } else {
+                        UNKNOWN
+                    }
+                }
+            }</td>
+        </tr>
+    }
+    </tbody>
+</table>

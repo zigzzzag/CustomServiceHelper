@@ -1,0 +1,10 @@
+@(user: User, addVkGroupForm: Form[Dashboard.AddVkGroup])
+
+    @main(user) {
+        <div class="dashboard">
+            @views.html.dashboard.managevkgroups(addVkGroupForm)
+            <br>
+            <br>
+            @views.html.dashboard.vkgroupstable(user)
+        </div>
+    }
