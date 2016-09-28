@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.HashSet;
 import models.User;
+import models.utils.VkGroupMembersMaxException;
 import models.utils.VkGroupNotFoundException;
 import models.vk.VkGroup;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import vk.group.VkGroupUtils;
 public class Dashboard extends Controller {
 
     private static final Logger LOG = LoggerFactory.getLogger(Dashboard.class);
+    private static final int MAX_COUNT_VK_GROUP_MEMBERS = 100_000;
 
     @Inject
     private FormFactory formFactory;
@@ -53,7 +55,11 @@ public class Dashboard extends Controller {
             try {
                 fillInfoFromVk(vkGroup);
             } catch (VkGroupNotFoundException e) {
-                LOG.warn("not found group with vkGroupId: " + vkGroup.vkId, e);
+                LOG.warn("add vkGroup: not found group with vkGroupId: " + vkGroup.vkId);
+                addVkGroupForm.reject(e.getMessage());
+                return badRequest(index.render(User.findByEmail(request().username()), addVkGroupForm));
+            } catch (VkGroupMembersMaxException e) {
+                LOG.warn("add vkGroup: more than max " + MAX_COUNT_VK_GROUP_MEMBERS);
                 addVkGroupForm.reject(e.getMessage());
                 return badRequest(index.render(User.findByEmail(request().username()), addVkGroupForm));
             }
@@ -65,19 +71,21 @@ public class Dashboard extends Controller {
         return index();
     }
 
-    private void fillInfoFromVk(VkGroup vkGroup) throws VkGroupNotFoundException {
+    private void fillInfoFromVk(VkGroup vkGroup) {
         try {
             VkGroupResponse vkGroupResp = VkGroupUtils.getVkGroupFromVk(vkGroup.vkId);
             if (vkGroupResp == null) {
                 throw new VkGroupNotFoundException("Group " + vkGroup.vkId + " not found");
+            } else if (vkGroupResp.members_count > MAX_COUNT_VK_GROUP_MEMBERS) {
+                throw new VkGroupMembersMaxException("Group have more than " + MAX_COUNT_VK_GROUP_MEMBERS + " members");
             }
 
-            vkGroup.name = vkGroupResp.getName();
-            vkGroup.isClosed = vkGroupResp.getIs_closed();
-            vkGroup.type = vkGroupResp.getType();
-            vkGroup.photo = vkGroupResp.getPhoto();
-            vkGroup.photoMedium = vkGroupResp.getPhoto_medium();
-            vkGroup.photoBig = vkGroupResp.getPhoto_big();
+            vkGroup.name = vkGroupResp.name;
+            vkGroup.isClosed = vkGroupResp.is_closed;
+            vkGroup.type = vkGroupResp.type;
+            vkGroup.photo = vkGroupResp.photo;
+            vkGroup.photoMedium = vkGroupResp.photo_medium;
+            vkGroup.photoBig = vkGroupResp.photo_big;
         } catch (IOException e) {
             throw new VkGroupNotFoundException("Exception when getting group with id " + vkGroup.vkId);
         }

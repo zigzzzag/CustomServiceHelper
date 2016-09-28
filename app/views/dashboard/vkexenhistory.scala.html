@@ -71,7 +71,7 @@
             <label>vk group</label>
             <select class="form-control error" name="vkGroupId" id="vkGroupId">
                 <option value=""></option>
-                @for(vkGroup <- user.vkGroups) {
+                @for(vkGroup <- user.getVkGroups) {
                     <option value=@vkGroup.vkId>@vkGroup.name</option>
                 }
             </select>

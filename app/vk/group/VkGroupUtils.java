@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class VkGroupUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(VkGroupUtils.class);
-    public static final String VK_GROUPS = "https://api.vk.com/method/groups.getById?group_id=%s";
+    public static final String VK_GROUPS = "https://api.vk.com/method/groups.getById?group_id=%s&fields=members_count";
     public static final String VK_GROUPS_MEMBERS = "https://api.vk.com/method/groups.getMembers?group_id=%s&offset=%s";
 
     private static String getVkGroupsQuery(String groupId) {
