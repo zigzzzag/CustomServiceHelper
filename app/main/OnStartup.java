@@ -2,10 +2,12 @@ package main;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vk.group.VkGroupTask;
@@ -26,7 +28,9 @@ public class OnStartup {
 
     @Inject
     public OnStartup() {
-        EXECUTOR.scheduleAtFixedRate(new VkGroupTask(), millisToNextHour(), 1L, TimeUnit.HOURS);
+        EXECUTOR.submit(new VkGroupTask());
+
+        EXECUTOR.scheduleAtFixedRate(new VkGroupTask(), millisToNextHour(), 60 * 60 * 1000, TimeUnit.MILLISECONDS);
         LOG.info("EXECUTOR started!");
     }
 
