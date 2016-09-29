@@ -1,16 +1,15 @@
 package vk.group;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import models.vk.VkEnterExitHistory;
 import models.vk.VkGroup;
 import models.vk.VkUser;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static models.vk.VkEnterExitHistory.Status.ENTER;
 import static models.vk.VkEnterExitHistory.Status.EXIT;
@@ -25,11 +24,11 @@ public class VkGroupTask implements Runnable {
 
     @Override
     public void run() {
-        List<VkGroup> allVkGroups = VkGroup.getAll();
+        List<VkGroup> allOpenedVkGroups = VkGroup.getAllOpened();
 
-        LOG.info("allVkGroups: {}", allVkGroups);
+        LOG.info("allOpenedVkGroups: {}", allOpenedVkGroups);
 
-        for (VkGroup vkGroup : allVkGroups) {
+        for (VkGroup vkGroup : allOpenedVkGroups) {
             analizeVkGroup(vkGroup);
         }
     }
@@ -43,7 +42,7 @@ public class VkGroupTask implements Runnable {
             resp = VkGroupUtils.getVkGroupMembersFromVk(vkGroup.vkId);
             LOG.info("getVkGroupMembersFromVk \"{}\" time: {}ms, resp: {}", vkGroup.vkId,
                     System.currentTimeMillis() - startTime, resp.count);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error("failed getVkGroupMembersFromVk for vkGroup: " + vkGroup.vkId, e);
             return;
         }

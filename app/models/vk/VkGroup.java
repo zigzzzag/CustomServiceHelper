@@ -74,6 +74,10 @@ public class VkGroup extends Model {
         return finder.all();
     }
 
+    public static List<VkGroup> getAllOpened() {
+        return finder.where().eq("is_closed", 0).findList();
+    }
+
     public static VkGroup findByVkId(String vkId) {
         return finder.where().eq("vkId", vkId).findUnique();
     }
