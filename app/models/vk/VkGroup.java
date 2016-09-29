@@ -106,5 +106,10 @@ public class VkGroup extends Model {
         return enterVkUsers;
     }
 
-
+    @Override
+    public String toString() {
+        return "VkGroup{" +
+                "vkId='" + vkId + '\'' +
+                '}';
+    }
 }

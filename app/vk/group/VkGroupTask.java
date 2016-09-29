@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import models.vk.VkEnterExitHistory;
 import models.vk.VkGroup;
 import models.vk.VkUser;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import static models.vk.VkEnterExitHistory.Status.ENTER;
 import static models.vk.VkEnterExitHistory.Status.EXIT;
 import static models.vk.VkEnterExitHistory.Status.INIT;
@@ -24,6 +26,8 @@ public class VkGroupTask implements Runnable {
     @Override
     public void run() {
         List<VkGroup> allVkGroups = VkGroup.getAll();
+
+        LOG.info("allVkGroups: {}", allVkGroups);
 
         for (VkGroup vkGroup : allVkGroups) {
             analizeVkGroup(vkGroup);
