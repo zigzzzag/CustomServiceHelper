@@ -35,6 +35,8 @@ public class VkGroupTask implements Runnable {
     }
 
     private void analizeVkGroup(VkGroup vkGroup) {
+        LOG.info("start analize group: {}", vkGroup.vkId);
+
         long startTime = System.currentTimeMillis();
         VkGroupMembersResponse resp;
         try {
@@ -54,13 +56,16 @@ public class VkGroupTask implements Runnable {
 
         DateTime today = new DateTime();
         if (vkGroup.updateCount == 0) {
+            LOG.info("start init histories for group: {}", vkGroup.vkId);
             for (VkUser vkUser : actualVkUsers) {
                 VkEnterExitHistory history = new VkEnterExitHistory(today, vkGroup, vkUser, INIT);
                 history.save();
             }
             vkGroup.vkUsers.addAll(actualVkUsers);
             vkGroup.save();
+            LOG.info("finish init histories for group: {}", vkGroup.vkId);
         } else {
+            LOG.info("start enter exit histories for group: {}", vkGroup.vkId);
             Set<VkUser> exitVkUsers = vkGroup.getExitVkUsers(actualVkUsers);
             vkGroup.vkUsers.removeAll(exitVkUsers);
             vkGroup.save();
@@ -75,6 +80,7 @@ public class VkGroupTask implements Runnable {
                 VkEnterExitHistory history = new VkEnterExitHistory(new DateTime(), vkGroup, vkUser, ENTER);
                 history.save();
             }
+            LOG.info("finish enter exit histories for group: {}", vkGroup.vkId);
         }
 
         vkGroup.updateCount++;

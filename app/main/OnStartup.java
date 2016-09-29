@@ -20,11 +20,7 @@ public class OnStartup {
 
     private static final Logger LOG = LoggerFactory.getLogger(OnStartup.class);
 
-    private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(4, r -> {
-        Thread t = Executors.defaultThreadFactory().newThread(r);
-        t.setDaemon(true);
-        return t;
-    });
+    private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(4);
 
     @Inject
     public OnStartup() {
